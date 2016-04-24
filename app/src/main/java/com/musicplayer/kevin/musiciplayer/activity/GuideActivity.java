@@ -1,6 +1,7 @@
 package com.musicplayer.kevin.musiciplayer.activity;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
@@ -22,7 +23,7 @@ import com.musicplayer.kevin.utils.PrefUtils;
 
 import java.util.ArrayList;
 
-public class GuideActivity extends AppCompatActivity {
+public class GuideActivity extends Activity {
 
     private final static int[] mImagesIds = new int[]{
             R.mipmap.guide1, R.mipmap.guide2, R.mipmap.guide3};

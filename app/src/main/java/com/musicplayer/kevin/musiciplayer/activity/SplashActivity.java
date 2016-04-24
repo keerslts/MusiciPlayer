@@ -1,7 +1,7 @@
 package com.musicplayer.kevin.musiciplayer.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import com.musicplayer.kevin.musiciplayer.R;
 import com.musicplayer.kevin.utils.PrefUtils;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends Activity {
 
     private ImageView imageView;
     private RelativeLayout rl_splash;
@@ -86,9 +86,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    //    private void jumpGuidePage() {
-//        startActivity(new Intent(SplashActivity.this,GuideActivity.class));
-//    }
+
     private void jumpGuidePage() {
         boolean userGuide = PrefUtils.getBoolean(this, "user_guide_showed", false);
         if (!userGuide) {
