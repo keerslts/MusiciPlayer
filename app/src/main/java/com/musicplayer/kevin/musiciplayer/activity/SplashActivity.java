@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.musicplayer.kevin.musiciplayer.R;
+import com.musicplayer.kevin.utils.PrefUtils;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -85,18 +86,18 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    private void jumpGuidePage() {
-        startActivity(new Intent(SplashActivity.this,GuideActivity.class));
-    }
-//    private void jumpGuidePage() {
-//        boolean userGuide = PrefUtils.getBoolen(this, "is_user_guide_showed", false);
-//        if (!userGuide) {
-//            startActivity(new Intent(SplashActivity.this, GuideActivity.class));
-//        } else {
-//            startActivity(new Intent(SplashActivity.this, MainActivity.class));
-//        }
-//
-//        finish();
+    //    private void jumpGuidePage() {
+//        startActivity(new Intent(SplashActivity.this,GuideActivity.class));
 //    }
-    // }
+    private void jumpGuidePage() {
+        boolean userGuide = PrefUtils.getBoolean(this, "user_guide_showed", false);
+        if (!userGuide) {
+            startActivity(new Intent(SplashActivity.this, GuideActivity.class));
+        } else {
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        }
+
+        finish();
+    }
+
 }
