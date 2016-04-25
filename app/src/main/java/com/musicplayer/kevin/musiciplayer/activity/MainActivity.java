@@ -32,7 +32,7 @@ public class MainActivity extends SlidingFragmentActivity{
         //设置全屏滑动唤出侧边栏
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         //设置侧边栏伸出长度
-        slidingMenu.setBehindOffset(200);
+        slidingMenu.setBehindOffset(500);
         initFragment();
     }
 

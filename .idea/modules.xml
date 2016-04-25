@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/MusiciPlayer.iml" filepath="$PROJECT_DIR$/MusiciPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/slidingMenu/slidingMenu.iml" filepath="$PROJECT_DIR$/slidingMenu/slidingMenu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xUtilsLibrary/xUtilsLibrary.iml" filepath="$PROJECT_DIR$/xUtilsLibrary/xUtilsLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xutils/xutils.iml" filepath="$PROJECT_DIR$/xutils/xutils.iml" />
     </modules>
   </component>
 </project>
