@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.musicplayer.kevin.view.NoScrollViewPager
+        android:id="@+id/noScroll_vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+    <RadioGroup
+        android:id="@+id/noScroll_rg_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="我是主页面"/>
+        android:background="@mipmap/bottom_tab_bg"
+        android:orientation="horizontal"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_localMusic"
+            style="@style/ButtonTabStyle"
+            android:drawableTop="@drawable/btn_tab_localmusic_selector"
+            android:text="本地音乐"
+            />
+        <RadioButton
+            android:id="@+id/rb_netMusic"
+            style="@style/ButtonTabStyle"
+            android:drawableTop="@drawable/btn_tab_netmusic_selector"
+            android:text="网络音乐"
+            />
+        <RadioButton
+            android:id="@+id/rb_chat"
+            style="@style/ButtonTabStyle"
+            android:drawableTop="@drawable/btn_tab_chat_selector"
+            android:text="音乐吐槽"
+            />
+
+    </RadioGroup>
 </LinearLayout>

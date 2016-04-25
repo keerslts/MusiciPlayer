@@ -1,6 +1,5 @@
 package com.musicplayer.kevin.fragment;
 
-import android.support.v7.widget.ViewUtils;
 import android.view.View;
 
 import com.musicplayer.kevin.musiciplayer.R;
