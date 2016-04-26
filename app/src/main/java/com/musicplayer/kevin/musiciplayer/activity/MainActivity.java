@@ -33,7 +33,7 @@ import com.musicplayer.kevin.service.MusicService;
 public class MainActivity extends SlidingFragmentActivity{
 
 //    private static SeekBar sk_bar;
-//    public ControllerInterface ci;
+    public ControllerInterface ci;
 //    public String path;
 
 
@@ -117,6 +117,8 @@ public class MainActivity extends SlidingFragmentActivity{
 
         fragmentTransaction.commit();
     }
+
+
 
 //    public void play(View v){
 //        ci.play();

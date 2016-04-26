@@ -24,7 +24,7 @@
             android:id="@+id/play"
             android:text="播放"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:onClick="play"/>
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/next_music"
             android:text="下一首"

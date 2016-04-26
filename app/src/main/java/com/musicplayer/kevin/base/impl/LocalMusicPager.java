@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -45,6 +46,12 @@ public class LocalMusicPager extends BasePager {
 
     private List<Map<String, Object>> musics;
 
+    private ListView lv_musics;
+    private Button play;
+    private Button next_music;
+    private Button up_music;
+    private int is_run ;
+
 
     private static SeekBar sk_bar;
     public ControllerInterface ci;
@@ -59,6 +66,7 @@ public class LocalMusicPager extends BasePager {
             Bundle bundle = message.getData();
             int duration = bundle.getInt("duration");
             int currentPosition = bundle.getInt("currentPosition");
+            Log.i(GlobalContents.TAG, "duration: "+duration+"   "+ currentPosition);
             sk_bar.setMax(duration);
             sk_bar.setProgress(currentPosition);
         }
@@ -67,17 +75,45 @@ public class LocalMusicPager extends BasePager {
     public LocalMusicPager(Activity myActivity) {
         super(myActivity);
     }
-    private ListView lv_musics;
+
 
     @Override
     public void initData() {
         tvTitle.setText("本地音乐");
         setSlidingMenuEnable(true);
 
+
         musics = new ArrayList<>();
         initView();
 
         View view = View.inflate(mActivity, R.layout.music_content,null);
+        play = (Button) view.findViewById(R.id.play);
+        next_music = (Button) view.findViewById(R.id.next_music);
+        up_music = (Button) view.findViewById(R.id.up_music);
+
+
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                is_run = new MusicService().getFlag_run();
+                if (is_run==0){
+                    ci.play();
+                    play.setText("暂停");
+
+                }else if(is_run%2==0){
+                    ci.continuePlay();
+                    play.setText("暂停");
+
+                }else if(is_run%2==1){
+                    ci.pause();
+                    play.setText("继续");
+
+                }
+
+            }
+        });
+
         lv_musics = (ListView) view.findViewById(R.id.lv_music_content);
 
         lv_musics.setAdapter(new MyAdapter(mActivity,musics));
@@ -93,6 +129,7 @@ public class LocalMusicPager extends BasePager {
                 path = musics.get(position).get("filePath").toString();
                 MusicService service = new MusicService();
                 service.setChange(path);
+                play.setText("暂停");
                 Log.i(GlobalContents.TAG, "diji" + path);
 
 
@@ -112,13 +149,14 @@ public class LocalMusicPager extends BasePager {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                //获取sk_bar的当前进度，然后设置给音乐服务的播放进度
-                ci.seekTo(seekBar.getProgress());
+
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                    //获取sk_bar的当前进度，然后设置给音乐服务的播放进度
+                ci.seekTo(seekBar.getProgress());
+                //Log.i(GlobalContents.TAG, "progress: "+ seekBar.getProgress());
             }
         });
 
@@ -142,15 +180,7 @@ public class LocalMusicPager extends BasePager {
         }, mActivity.BIND_AUTO_CREATE);
     }
 
-    public void play(View v){
-        ci.play();
-    }
-    public void pause(View v){
-        ci.pause();
-    }
-    public void continuePlay(View v){
-        ci.continuePlay();
-    }
+
 
     private void initView() {
 

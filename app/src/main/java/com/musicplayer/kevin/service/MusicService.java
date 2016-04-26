@@ -17,6 +17,7 @@ import com.musicplayer.kevin.musicplayer.global.GlobalContents;
 
 import java.io.IOException;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Kevin on 2016/4/26.
@@ -25,6 +26,15 @@ public class MusicService extends Service {
     MediaPlayer player;
     private Timer timer;
     private static String change;
+    private static int flag_run = 1;
+
+    public static int getFlag_run() {
+        return flag_run;
+    }
+
+    public static void setFlag_run(int flag_run) {
+        MusicService.flag_run = flag_run;
+    }
 
     public static void setChange(String change) {
         MusicService.change = change;
@@ -38,7 +48,7 @@ public class MusicService extends Service {
         Bundle bundle = intent.getExtras();
 
         path = bundle.getString("path");
-        Log.i(GlobalContents.TAG, "onBind:传来的intent值 " + path);
+       // Log.i(GlobalContents.TAG, "onBind:传来的intent值 " + path);
         return new MusicController();
     }
 
@@ -46,13 +56,13 @@ public class MusicService extends Service {
     public void onCreate() {
         super.onCreate();
         player = new MediaPlayer();
-       // Log.i(GlobalContents.TAG, "here service ");
-        new Thread(){
+        // Log.i(GlobalContents.TAG, "here service ");
+        new Thread() {
             @Override
             public void run() {
-                while (true){
+                while (true) {
                     if (change != path) {
-                        Log.i(GlobalContents.TAG, "run: "+ change);
+                        Log.i(GlobalContents.TAG, "run: " + change);
                         path = change;
                         play();
                     }
@@ -74,7 +84,7 @@ public class MusicService extends Service {
         player.stop();
         player.release();
 
-        if(timer != null){
+        if (timer != null) {
             timer.cancel();
             timer = null;
         }
@@ -104,19 +114,27 @@ public class MusicService extends Service {
     }
 
     private void seekTo(int progress) {
+        player.seekTo(progress);
     }
 
     private void continuePlay() {
+        flag_run++;
+        Log.i(GlobalContents.TAG, "conti: " + flag_run);
+        player.start();
+
     }
 
     private void pause() {
+        flag_run++;
+        Log.i(GlobalContents.TAG, "pause: " + flag_run);
+        player.pause();
+
     }
 
     private void play() {
+        flag_run = 1;
+        Log.i(GlobalContents.TAG, "play: " + flag_run);
         player.reset();
-
-
-
         try {
             player.setDataSource(path);
             player.prepareAsync();
@@ -131,31 +149,31 @@ public class MusicService extends Service {
             e.printStackTrace();
         }
 
-
-
-        new Thread(){
-
-            @Override
-            public void run() {
-
-                for(int i=0;i<100;i++) {
-                    try {
-                        sleep(30);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Message msg = LocalMusicPager.handler.obtainMessage();
-                    Bundle data = new Bundle();
-                    data.putInt("progress", i);
-                    msg.setData(data);
-                    LocalMusicPager.handler.sendMessage(msg);
-
-                }
-            }
-        }.start();
-
     }
 
     private void addTimer() {
+        if (timer == null) {
+            timer = new Timer();
+            //设计计时任务
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    //获取播放总时长
+                    int duration = player.getDuration();
+                    //获取当前播放进度
+                    int currentPosition = player.getCurrentPosition();
+
+                    Message msg = LocalMusicPager.handler.obtainMessage();
+
+                    //把数据封装至消息对象
+                    Bundle data = new Bundle();
+                    data.putInt("duration", duration);
+                    data.putInt("currentPosition", currentPosition);
+                    msg.setData(data);
+
+                    LocalMusicPager.handler.sendMessage(msg);
+                }
+            }, 5, 500);//计时任务开始5毫秒后，run方法执行，每500毫秒执行一次
+        }
     }
 }
