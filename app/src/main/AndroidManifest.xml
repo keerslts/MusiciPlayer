@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".activity.GuideActivity"></activity>
         <activity android:name=".activity.MainActivity"></activity>
+        <service android:name="com.musicplayer.kevin.service.MusicService"/>
     </application>
 
 </manifest>

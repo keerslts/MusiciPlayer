@@ -1,23 +1,36 @@
 package com.musicplayer.kevin.base.impl;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.musicplayer.kevin.base.BasePager;
+import com.musicplayer.kevin.inter.ControllerInterface;
 import com.musicplayer.kevin.musiciplayer.R;
+import com.musicplayer.kevin.musiciplayer.activity.MainActivity;
 import com.musicplayer.kevin.musicplayer.global.GlobalContents;
+import com.musicplayer.kevin.service.MusicService;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +44,25 @@ import java.util.Map;
 public class LocalMusicPager extends BasePager {
 
     private List<Map<String, Object>> musics;
+
+
+    private static SeekBar sk_bar;
+    public ControllerInterface ci;
+    public String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public static Handler handler = new Handler(){
+        public void handleMessage(Message message){
+            Bundle bundle = message.getData();
+            int duration = bundle.getInt("duration");
+            int currentPosition = bundle.getInt("currentPosition");
+            sk_bar.setMax(duration);
+            sk_bar.setProgress(currentPosition);
+        }
+    };
 
     public LocalMusicPager(Activity myActivity) {
         super(myActivity);
@@ -49,15 +81,75 @@ public class LocalMusicPager extends BasePager {
         lv_musics = (ListView) view.findViewById(R.id.lv_music_content);
 
         lv_musics.setAdapter(new MyAdapter(mActivity,musics));
-//        TextView textView = new TextView(mActivity);
-//        textView.setText("本地音乐11");
-//        textView.setTextColor(Color.RED);
-//        textView.setTextSize(25);
-//        textView.setGravity(Gravity.CENTER);
+//
 
         flContent.addView(view);
 
+        startService(view);
 
+        lv_musics.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                path = musics.get(position).get("filePath").toString();
+                MusicService service = new MusicService();
+                service.setChange(path);
+                Log.i(GlobalContents.TAG, "diji" + path);
+
+
+            }
+        });
+
+
+    }
+
+    public void startService(View view){
+        sk_bar = (SeekBar) view.findViewById(R.id.music_seekBar);
+        sk_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //获取sk_bar的当前进度，然后设置给音乐服务的播放进度
+                ci.seekTo(seekBar.getProgress());
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        Intent intent = new Intent(mActivity,MusicService.class);
+
+        intent.putExtra("path", path);
+        mActivity.startService(intent);
+
+
+        mActivity.bindService(intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                ci = (ControllerInterface) service;
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        }, mActivity.BIND_AUTO_CREATE);
+    }
+
+    public void play(View v){
+        ci.play();
+    }
+    public void pause(View v){
+        ci.pause();
+    }
+    public void continuePlay(View v){
+        ci.continuePlay();
     }
 
     private void initView() {
@@ -81,10 +173,10 @@ public class LocalMusicPager extends BasePager {
                 String flag = f.getName().substring(f.getName().lastIndexOf(".")+1).toLowerCase();
                 if(flag.equals("mp3")){
                     map.put("fileName",f.getName());
-                    map.put("fullPath",f.getAbsolutePath());
-                    map.put("flag",1);
+                    map.put("filePath",f.getAbsolutePath());
+                    map.put("flag", 1);
                     musics.add(map);
-                   // Log.i(GlobalContents.TAG, "music: "+ f.getName());
+                   // Log.i(GlobalContents.TAG, "music: "+ f.getAbsolutePath());
                 }
             }
         }
@@ -130,6 +222,13 @@ public class LocalMusicPager extends BasePager {
             TextView musicName = (TextView) convertView.findViewById(R.id.music_name);
             Map<String, Object> map = musics.get(position);
             musicName.setText(map.get("fileName").toString());
+
+           // MainActivity mainActivity = (MainActivity) mActivity;
+
+           // Log.i(GlobalContents.TAG, "filepath: "+ map.get("filePath".toString()));
+           // mainActivity.setPath(map.get("filePath").toString());
+
+
 
             return convertView;
         }
