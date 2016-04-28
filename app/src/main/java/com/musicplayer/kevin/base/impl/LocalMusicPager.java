@@ -32,6 +32,7 @@ import com.musicplayer.kevin.musiciplayer.R;
 import com.musicplayer.kevin.musiciplayer.activity.MainActivity;
 import com.musicplayer.kevin.musicplayer.global.GlobalContents;
 import com.musicplayer.kevin.service.MusicService;
+import com.musicplayer.kevin.utils.LoadMusic;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,14 +85,15 @@ public class LocalMusicPager extends BasePager {
 
     @Override
     public void initData() {
-
+        //清除之前的布局
         flContent.removeAllViews();
-
+        //设置头标题
         tvTitle.setText("本地音乐");
+        //设置侧边栏可以唤出
         setSlidingMenuEnable(true);
 
 
-        musics = new ArrayList<>();
+      //  musics = new ArrayList<>();
         initView();
 
         View view = View.inflate(mActivity, R.layout.music_content, null);
@@ -220,34 +222,13 @@ public class LocalMusicPager extends BasePager {
 
     private void initView() {
 
-        File file = Environment.getExternalStorageDirectory();
-
-        loadMusicFile(file);
+        musics = LoadMusic.getMusics();
+        Log.i(GlobalContents.TAG, "musics "+musics.size());
+        music_number = LoadMusic.getMusic_number();
+        Log.i(GlobalContents.TAG, "music_number"+music_number);
     }
 
-    private void loadMusicFile(File file) {
 
-        File[] fs = file.listFiles();
-        //file.getAbsolutePath();
-        for (int i = 0; i < fs.length; i++) {
-            File f = fs[i];
-            //  String fileName = f.getName();
-            Map<String, Object> map = new HashMap<>();
-            if (f.isDirectory()) {
-                loadMusicFile(f);
-            } else {
-                String flag = f.getName().substring(f.getName().lastIndexOf(".") + 1).toLowerCase();
-                if (flag.equals("mp3")) {
-                    map.put("fileName", f.getName());
-                    map.put("filePath", f.getAbsolutePath());
-                    //  map.put("flag", 1);
-                    musics.add(map);
-                    music_number++;
-                    // Log.i(GlobalContents.TAG, "music: "+ f.getAbsolutePath());
-                }
-            }
-        }
-    }
 
 
     private class MyAdapter extends BaseAdapter {
@@ -286,8 +267,6 @@ public class LocalMusicPager extends BasePager {
             TextView musicName = (TextView) convertView.findViewById(R.id.music_name);
             Map<String, Object> map = musics.get(position);
             musicName.setText(map.get("fileName").toString());
-
-            // MainActivity mainActivity = (MainActivity) mActivity;
 
             // Log.i(GlobalContents.TAG, "filepath: "+ map.get("filePath".toString()));
             // mainActivity.setPath(map.get("filePath").toString());

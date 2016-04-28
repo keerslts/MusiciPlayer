@@ -3,6 +3,8 @@ package com.musicplayer.kevin.musiciplayer.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -12,7 +14,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.musicplayer.kevin.musiciplayer.R;
+import com.musicplayer.kevin.musicplayer.global.GlobalContents;
+import com.musicplayer.kevin.utils.LoadMusic;
 import com.musicplayer.kevin.utils.PrefUtils;
+
+import java.io.File;
 
 public class SplashActivity extends Activity {
 
@@ -25,6 +31,21 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
         imageView = (ImageView) findViewById(R.id.iv_splash);
         rl_splash = (RelativeLayout) findViewById(R.id.rl_splash);
+
+        new Thread(){
+            @Override
+            public void run() {
+
+                //获取外部存储空间中的所有文件
+                File file = Environment.getExternalStorageDirectory();
+                //获取音乐文件
+              //  LoadMusic loadMusic = new LoadMusic();
+                LoadMusic.initDate();
+                LoadMusic.loadMusicFile(file);
+                LoadMusic.setEnd_flag(1);
+
+            }
+        }.start();
 
         startAnim();
 
