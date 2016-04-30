@@ -48,7 +48,6 @@ public class LoadMusic {
         //file.getAbsolutePath();
         for (int i = 0; i < fs.length; i++) {
             File f = fs[i];
-            //  String fileName = f.getName();
             Map<String, Object> map = new HashMap<>();
             if (f.isDirectory()) {
                 loadMusicFile(f);

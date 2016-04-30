@@ -51,7 +51,7 @@ public class MainActivity extends SlidingFragmentActivity{
 
         while(LoadMusic.getEnd_flag()==0){
             Toast.makeText(MainActivity.this,"正在加载本地音乐，请稍后！",Toast.LENGTH_SHORT);
-            Log.i(GlobalContents.TAG, "toast");
+         //   Log.i(GlobalContents.TAG, "toast");
 
         }
 

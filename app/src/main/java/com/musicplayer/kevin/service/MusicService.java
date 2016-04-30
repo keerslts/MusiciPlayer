@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.musicplayer.kevin.base.impl.LocalMusicPager;
+import com.musicplayer.kevin.base.impl.NetMusicPager;
 import com.musicplayer.kevin.inter.ControllerInterface;
 import com.musicplayer.kevin.musiciplayer.activity.MainActivity;
 import com.musicplayer.kevin.musicplayer.global.GlobalContents;
@@ -48,7 +49,7 @@ public class MusicService extends Service {
         Bundle bundle = intent.getExtras();
 
         path = bundle.getString("path");
-       // Log.i(GlobalContents.TAG, "onBind:传来的intent值 " + path);
+        // Log.i(GlobalContents.TAG, "onBind:传来的intent值 " + path);
         return new MusicController();
     }
 
@@ -134,6 +135,8 @@ public class MusicService extends Service {
     private void play() {
         flag_run = 1;
         Log.i(GlobalContents.TAG, "play: " + flag_run);
+        // Log.i(GlobalContents.TAG, "path: " + path);
+
         player.reset();
         try {
             player.setDataSource(path);
@@ -163,15 +166,27 @@ public class MusicService extends Service {
                     //获取当前播放进度
                     int currentPosition = player.getCurrentPosition();
 
-                    Message msg = LocalMusicPager.handler.obtainMessage();
+                    if (!path.contains("http://")) {
 
-                    //把数据封装至消息对象
-                    Bundle data = new Bundle();
-                    data.putInt("duration", duration);
-                    data.putInt("currentPosition", currentPosition);
-                    msg.setData(data);
+                        Message msg = LocalMusicPager.handler.obtainMessage();
 
-                    LocalMusicPager.handler.sendMessage(msg);
+                        //把数据封装至消息对象
+                        Bundle data = new Bundle();
+                        data.putInt("duration", duration);
+                        data.putInt("currentPosition", currentPosition);
+                        msg.setData(data);
+
+                        LocalMusicPager.handler.sendMessage(msg);
+                    } else {
+                        Message msg = NetMusicPager.handler.obtainMessage();
+
+                        Bundle data = new Bundle();
+                        data.putInt("duration", duration);
+                        data.putInt("currentPosition", currentPosition);
+                        msg.setData(data);
+
+                        NetMusicPager.handler.sendMessage(msg);
+                    }
                 }
             }, 5, 500);//计时任务开始5毫秒后，run方法执行，每500毫秒执行一次
         }
