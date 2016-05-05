@@ -98,7 +98,7 @@ public class NetMusicPager extends BasePager {
         music_number = 0;
 
         tvTitle.setText("网络音乐");
-        setSlidingMenuEnable(true);
+        setSlidingMenuEnable(false);
 
         getDataFromServer();
 

@@ -112,4 +112,8 @@ public class ContentFragment extends BaseFragment {
             container.removeView((View) object);
         }
     }
+
+    public ChatPager getChatPager(){
+        return (ChatPager) mPagerList.get(2);
+    }
 }

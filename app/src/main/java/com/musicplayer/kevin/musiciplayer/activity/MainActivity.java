@@ -45,15 +45,7 @@ public class MainActivity extends SlidingFragmentActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
        // Log.i(GlobalContents.TAG, "endflag  outside: "+LoadMusic.getEnd_flag());
-
-
-        while(LoadMusic.getEnd_flag()==0){
-            Toast.makeText(MainActivity.this,"正在加载本地音乐，请稍后！",Toast.LENGTH_SHORT);
-         //   Log.i(GlobalContents.TAG, "toast");
-
-        }
 
         //设置左侧边栏和布局文件绑定
         setBehindContentView(R.layout.left_menu);
@@ -63,9 +55,12 @@ public class MainActivity extends SlidingFragmentActivity{
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         //设置侧边栏伸出长度
         slidingMenu.setBehindOffset(500);
-
-
         initFragment();
+
+        while(LoadMusic.getEnd_flag()==0){
+            Toast.makeText(MainActivity.this,"正在加载本地音乐，请稍后！",Toast.LENGTH_SHORT);
+            //   Log.i(GlobalContents.TAG, "toast");
+        }
 
 
 
@@ -79,10 +74,24 @@ public class MainActivity extends SlidingFragmentActivity{
         fragmentTransaction.replace(R.id.activity_main,
                 new ContentFragment(), FRAGMENT_CONTENT);
         fragmentTransaction.replace(R.id.left_menu,
-                new LeftFragment(),FRAGMENT_LEFT_MENU);
+                new LeftFragment(), FRAGMENT_LEFT_MENU);
 
         fragmentTransaction.commit();
     }
 
+    public LeftFragment getLeftFragment(){
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        LeftFragment leftFragment = (LeftFragment) fragmentManager.
+                findFragmentByTag(FRAGMENT_LEFT_MENU);
+        return leftFragment;
+    }
+
+    public ContentFragment getContentFragment(){
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ContentFragment contentFragment = (ContentFragment) fragmentManager.
+                findFragmentByTag(FRAGMENT_CONTENT);
+        return contentFragment;
+    }
 }

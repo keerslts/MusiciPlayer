@@ -90,7 +90,7 @@ public class LocalMusicPager extends BasePager {
         //设置头标题
         tvTitle.setText("本地音乐");
         //设置侧边栏可以唤出
-        setSlidingMenuEnable(false);
+        setSlidingMenuEnable(true);
 
 
       //  musics = new ArrayList<>();
